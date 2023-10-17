@@ -18,13 +18,17 @@ class PostPageState extends State<PostPage> {
   TextEditingController userNameController = TextEditingController();
 
   Future<void> sendPostRequest() async {
-    var response = await http.post(apiUrl,
-        headers: {"Content-Type": "application/json"},
-        body: jsonEncode({
+    var response = await http.post(
+      apiUrl,
+      headers: {"Content-Type": "application/json"},
+      body: jsonEncode(
+        {
           "name": nameController.text,
           "username": userNameController.text,
           "userId": 1,
-        }));
+        },
+      ),
+    );
 
     //When a BuildContext is used, its mounted
     //property must be checked after an asynchronous gap.
