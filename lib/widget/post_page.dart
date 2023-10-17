@@ -1,7 +1,5 @@
-import 'dart:convert';
-
+import 'package:apiproject/datahandler.dart';
 import 'package:flutter/material.dart';
-import 'package:http/http.dart' as http;
 
 class PostPage extends StatefulWidget {
   const PostPage({super.key});
@@ -16,36 +14,7 @@ class PostPageState extends State<PostPage> {
 
   TextEditingController nameController = TextEditingController();
   TextEditingController userNameController = TextEditingController();
-
-  Future<void> sendPostRequest() async {
-    var response = await http.post(
-      apiUrl,
-      headers: {"Content-Type": "application/json"},
-      body: jsonEncode(
-        {
-          "name": nameController.text,
-          "username": userNameController.text,
-          "userId": 1,
-        },
-      ),
-    );
-
-    //When a BuildContext is used, its mounted
-    //property must be checked after an asynchronous gap.
-    if (!context.mounted) return;
-    //201 indicate a succesful creation
-    if (response.statusCode == 201) {
-      ScaffoldMessenger.of(context).showSnackBar(const SnackBar(
-        content: Text("Post created successfully!"),
-      ));
-      Navigator.of(context).pop();
-      print(response.body);
-    } else {
-      ScaffoldMessenger.of(context).showSnackBar(const SnackBar(
-        content: Text("Failed to create post!"),
-      ));
-    }
-  }
+  DataHandler dataHandler = DataHandler();
 
   @override
   Widget build(BuildContext context) {
@@ -66,7 +35,12 @@ class PostPageState extends State<PostPage> {
               decoration: const InputDecoration(hintText: "Username"),
             ),
             ElevatedButton(
-              onPressed: sendPostRequest,
+              onPressed: () {
+                setState(() {
+                  dataHandler.sendPostRequest(
+                      context, nameController.text, userNameController.text);
+                });
+              },
               child: const Text("Create Post"),
             ),
           ],
